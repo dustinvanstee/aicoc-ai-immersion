@@ -1,2 +1,1 @@
-# aicoc-ai-immersion
-Assets to conduct AI Immersion Lab
+This repo contains the contents for all the lab assets for the AI Immersion.

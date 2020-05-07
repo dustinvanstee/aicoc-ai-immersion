@@ -12,7 +12,7 @@ import math
 from sklearn.tree import DecisionTreeClassifier 
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
-import tensorflow as tf
+#import tensorflow as tf
 	
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -103,7 +103,7 @@ import math
 from sklearn.tree import DecisionTreeClassifier 
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
-import tensorflow as tf
+#import tensorflow as tf
 import numpy as np
 
 CLASS_SIZE = 2

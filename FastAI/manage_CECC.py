@@ -63,8 +63,8 @@ class remoteConnection:
 
         command = 'echo "ssh-rsa ' + public_key + ' dustinvanstee@dustins-mbp.pok.ibm.com" >> ~/.ssh/authorized_keys'
 
-        stdin, stdout, stderr = self.runcmd(command)
-        output = stdout.read()
+        self.runcmd(command,timeout=10)
+        #output = stdout.read()
 
 
         print("Transferring github keys")
@@ -148,9 +148,9 @@ def main() :
 
     myConn = remoteConnection(args.host,args.user,args.password)
     myConn.runcmd('ls -lart')
-    myConn.setup_private_github()
     
     if(args.install_code=="True") : 
+        myConn.setup_private_github()
         myConn.runcmd('conda create -y -n {}'.format(args.venv))
         myConn.runcmd('conda activate {}; bash ./setup_fastai.sh'.format(args.venv))
     

@@ -13,10 +13,10 @@ def nprint(mystring) :
     print("**{}** : {}".format(sys._getframe(1).f_code.co_name,mystring))
 
 
-machine_dict = { 
-  #"vm1" : {"host" :"xxxxxxxxxx", "ip" : "129.40.94.89", "password":"NWuu-NQPRI4zFqA"},
-  "vm2" : {"host" :"p1253-kvm1", "ip" : "129.40.51.65", "password":"077o+w%xkSKT97c"}
-}
+# machine_dict = { 
+#   #"vm1" : {"host" :"xxxxxxxxxx", "ip" : "129.40.94.89", "password":"NWuu-NQPRI4zFqA"},
+#   "vm2" : {"host" :"p1253-kvm1", "ip" : "129.40.51.65", "password":"077o+w%xkSKT97c"}
+# }
   
 
 
@@ -107,6 +107,17 @@ def _parser():
                                formatter_class=CustomFormatter)
 
     parser.add_argument(
+        '--host', action='store', required=True, help='S|--host=host or ip'
+             'Default: %(default)s')
+    parser.add_argument(
+        '--user', action='store', required=True, help='S|--user=username'
+             'Default: %(default)s')
+    parser.add_argument(
+        '--password', action='store', required=True, help='S|--password=password'
+             'Default: %(default)s')
+
+
+    parser.add_argument(
         '--install_code', action='store',  required=False,
         choices=["True","False"], default="False",
         help='S|--force_refresh=[True|False] '
@@ -135,21 +146,20 @@ def main() :
     for argk in vars(args) :
         print(argk,vars(args)[argk])
 
-    for k,srv in machine_dict.items() :
-        myConn = remoteConnection(srv["ip"],"cecuser",srv["password"])
-        myConn.runcmd('ls -lart')
-        myConn.setup_private_github()
-        
-        if(args.install_code=="True") : 
-            myConn.runcmd('conda create -y -n {}'.format(args.venv))
-            myConn.runcmd('conda activate {}; bash ./setup_fastai.sh'.format(args.venv))
-        
-        if(args.start_jupyter =="True"): 
-            myConn.runcmd('conda activate {}; bash ./start_jupyter.sh'.format(args.venv))
+    myConn = remoteConnection(args.host,args.user,args.password)
+    myConn.runcmd('ls -lart')
+    myConn.setup_private_github()
+    
+    if(args.install_code=="True") : 
+        myConn.runcmd('conda create -y -n {}'.format(args.venv))
+        myConn.runcmd('conda activate {}; bash ./setup_fastai.sh'.format(args.venv))
+    
+    if(args.start_jupyter =="True"): 
+        myConn.runcmd('conda activate {}; bash ./start_jupyter.sh'.format(args.venv))
 
 
-        #myConn.runcmd('cat ~/.ssh/id_rsa.pub')
-        myConn.print_login()
+    #myConn.runcmd('cat ~/.ssh/id_rsa.pub')
+    myConn.print_login()
 
 if __name__ == "__main__":
     main()

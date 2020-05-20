@@ -1,0 +1,7 @@
+default_channels:
+  - https://repo.anaconda.com/pkgs/r
+  - https://repo.anaconda.com/pkgs/main
+channels:
+  - https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/linux-ppc64le/
+  - powerai
+  - defaults

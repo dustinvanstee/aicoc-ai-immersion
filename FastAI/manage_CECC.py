@@ -49,9 +49,9 @@ class remoteConnection:
         self.ssh.connect(self.server, username=self.username, password=self.password)
         self.scp = SCPClient(self.ssh.get_transport())
 
-    def runcmd(self, command):
+    def runcmd(self, command, timeout=1000000):
         print("Running : {} ".format(command))
-        stdin, stdout, stderr = self.ssh.exec_command(command)
+        stdin, stdout, stderr = self.ssh.exec_command(command, timeout=timeout)
         output = stdout.read()
         for myl in output.splitlines():
             print("runcmd : {}".format(myl))
@@ -63,7 +63,7 @@ class remoteConnection:
 
         command = 'echo "ssh-rsa ' + public_key + ' dustinvanstee@dustins-mbp.pok.ibm.com" >> ~/.ssh/authorized_keys'
 
-        self.runcmd(command,timeout=10)
+        self.runcmd(command)
         #output = stdout.read()
 
 
@@ -147,7 +147,6 @@ def main() :
         print(argk,vars(args)[argk])
 
     myConn = remoteConnection(args.host,args.user,args.password)
-    myConn.runcmd('ls -lart')
     
     if(args.install_code=="True") : 
         myConn.setup_private_github()
@@ -155,8 +154,12 @@ def main() :
         myConn.runcmd('conda activate {}; bash ./setup_fastai.sh'.format(args.venv))
     
     if(args.start_jupyter =="True"): 
-        myConn.runcmd('conda activate {}; bash ./start_jupyter.sh'.format(args.venv))
-
+        try :
+            print("Starting Jupyter !")
+            myConn.scp.put('/Users/dustinvanstee/data/work/osa/2020-05-ai-college-box/labs-demos-ibm-git/FastAI/notebook.json', '~/.jupyter/nbconfig/notebook.json')
+            myConn.runcmd('conda activate {}; bash ./start_jupyter.sh'.format(args.venv),timeout=10)
+        except  :
+            print("Command timeout .. its ok its expected !")
 
     #myConn.runcmd('cat ~/.ssh/id_rsa.pub')
     myConn.print_login()

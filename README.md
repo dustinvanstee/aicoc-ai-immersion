@@ -1,1 +1,24 @@
-This repo contains the contents for all the lab assets for the AI Immersion.
+# AICOC Immersion
+
+
+
+This file will become your README and also the index of your documentation.
+
+## Install
+
+`pip install your_project_name`
+
+## How to use
+
+Fill me in please! Don't forget code examples:
+
+```python
+1+1
+```
+
+
+
+
+    2
+
+

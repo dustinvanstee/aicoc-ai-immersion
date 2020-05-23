@@ -1,0 +1,8 @@
+{
+  "fastai_utils": {
+    "Overview": "/",
+    "Welcome to Jupyter Notebooks!": "/notebook_tutorial",
+    "Build your custom image classifier using FastAI and WML-CE": "/fastai_image_classification",
+    "Lesson 1 - What's your pet": "/lesson1-pets"
+  }
+}

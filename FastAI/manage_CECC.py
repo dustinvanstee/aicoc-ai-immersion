@@ -35,7 +35,6 @@ class remoteConnection:
         self.server = server
         self.username = username
         self.password = password
-        self.dirName = ""
         self.useLocal = False # Use Local Copy of interpreter.json (instead of trying to download server copy
         self.tarDownloaded = False
         self.connect()
@@ -57,15 +56,20 @@ class remoteConnection:
             print("runcmd : {}".format(myl))
 
 
-    def setup_private_github(self):
+    def bootstrap_server(self):
+        '''
+        Allows me to remote passwordless ssh
+        Allows me to update github repo seamlessly
+        Sets up my conda stuff
+        Sets up some class scripts for bootstrapping...
 
+        '''
         public_key = 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDGOskWU2Wk9Eejhobdl48gpOjwgX0v6acGH+gK64AeK5gTtFxrPHdjh4T+WZx2YSTtSvKvBwjcCGYB6N0J/+Q3Q85ax5cpS8SBEWSkZ1CcnScCRKR2Zx/n/nBnnKgS/+PstPed7cx0sa/lWGBrC/q51Lgpo0ljbMGpRjnV8wLWnm3r1hX9ioCOI7AFFBQADFxZtwnjSaWMxOrfpXR4Oqb7U/hCIS3fqn7OiTKyqBcEGglCJijGOUIPLl0iEQCGc4lUfQn+KdBbT1TBF1A1U1vs2jNmkUx1NSG3aTm4KRBczw/6TvGJGQY21CpBhKCDGSfg5r2UP16aP6RQA52dO4v/'
 
         command = 'echo "ssh-rsa ' + public_key + ' dustinvanstee@dustins-mbp.pok.ibm.com" >> ~/.ssh/authorized_keys'
 
         self.runcmd(command)
         #output = stdout.read()
-
 
         print("Transferring github keys")
         if(self.username == 'cecuser') :
@@ -134,6 +138,11 @@ def _parser():
         help='S|Name of virtual environemnt for fastai'
              'Default: %(default)s')
 
+    parser.add_argument(
+        '--user_port_dir', type=str, default="5050", required=False,
+        help='S|sub directory for multiple users per VM.  also the port used for jupyter'
+             'Default: %(default)s')
+
     args = parser.parse_args()
 
     return args
@@ -149,15 +158,16 @@ def main() :
     myConn = remoteConnection(args.host,args.user,args.password)
     
     if(args.install_code=="True") : 
-        myConn.setup_private_github()
+        myConn.bootstrap_server()
         myConn.runcmd('conda create -y -n {}'.format(args.venv))
         myConn.runcmd('conda activate {}; bash ./setup_fastai.sh'.format(args.venv))
     
     if(args.start_jupyter =="True"): 
+        myConn.bootstrap_server()
         try :
             print("Starting Jupyter !")
             myConn.scp.put('/Users/dustinvanstee/data/work/osa/2020-05-ai-college-box/labs-demos-ibm-git/FastAI/notebook.json', '~/.jupyter/nbconfig/notebook.json')
-            myConn.runcmd('conda activate {}; bash ./start_jupyter.sh'.format(args.venv),timeout=10)
+            myConn.runcmd('conda activate {}; bash ./start_jupyter.sh {}'.format(args.venv,args.user_port_dir),timeout=20)
         except  :
             print("Command timeout .. its ok its expected !")
 

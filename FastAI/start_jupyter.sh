@@ -12,5 +12,5 @@ git reset --hard origin/master
 # kill existing jupyter
 ps -ef |  grep -i [j]upyter-notebook.* | grep port=$1 | sed -e "s/ \{1,\}/ /g" | cut -d " " -f2 | xargs -i kill {}
 # Startup 
-nohup jupyter notebook --ip=0.0.0.0 --allow-root --port=$user_port --no-browser --NotebookApp.token='aicoc' --NotebookApp.password='' &
+nohup jupyter notebook --ip=0.0.0.0 --allow-root --port=$user_port --no-browser --NotebookApp.token='aicoc' --NotebookApp.password=''  &> classlog.out &
 

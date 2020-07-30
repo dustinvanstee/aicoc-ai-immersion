@@ -84,10 +84,10 @@ def load_sample_data(CLASS_ENVIRONMENT) :
         location='/gpfs/home/s4s004/vanstee/2019-06-lendingclub-git/rawdata/'
         nprint("Setting data location to {}".format(location))
         loanstats_csv_files = glob.glob(location + 'LoanStats_securev1_*csv.gz')  # 'LoanStats_secure*csv'
-    elif(CLASS_ENVIRONMENT == 'wsl-1231') :
-        location='../datasets/'
+    elif(CLASS_ENVIRONMENT == 'UTSA') :
+        location='/gpfs/home/s4s004/vanstee/2019-06-lendingclub-git/rawdata/'
         nprint("Setting data location to {}".format(location))
-        loanstats_csv_files = glob.glob(location + 'LoanStats_securev1*csv.gz')  # 'LoanStats_secure*csv'
+        loanstats_csv_files = glob.glob(location + 'LoanStats_securev1_2016Q1*csv.gz')  # 'LoanStats_secure*csv'
   
     else :
         nprint("Setting data location to default {}".format(location))
@@ -446,7 +446,7 @@ def corr_vs_1var(df, var_to_corr) :
             corr_dict[c] = df[var_to_corr].corr(df[c])
     
     sorted_list = sorted(corr_dict.items(), key=operator.itemgetter(1))
-    print("{:60s} {:20s}".format("Highest Positive", "Highest Negative"))
+    print("{:60s} {:20s}".format("Highest Negative", "Highest Positive"))
     print("{:60s} {:20s}".format("Correlation", "Correlation"))
     print("{:60s} {:20s}".format("==============", "=============="))
     for x in range(20) :
@@ -701,32 +701,32 @@ class lendingclub_ml:
         nprint("Creating new columns : {}".format(cols_))
         pca_encode_X.rename(columns=cols_, inplace=True)
 
-        nprint("Adding AE columns next")
+        #nprint("Adding AE columns next")
         #outputs = [layer.output for layer in self.ae_model.layers]
-        self.ae_model.summary()
+        #self.ae_model.summary()
 
-        nprint("Grabbing AE Bottleneck layer")
-        nl = len(self.ae_model.layers)
-        nprint("Num Layers : {}".format(nl))
+        #nprint("Grabbing AE Bottleneck layer")
+        #nl = len(self.ae_model.layers)
+        #nprint("Num Layers : {}".format(nl))
 
-        nl = int((nl - 2)/2)  # strip off front/back ...find middle.
+        #nl = int((nl - 2)/2)  # strip off front/back ...find middle.
 
-        btl_layer_str = 'dense_' + str(nl)
-        nprint("Bottleneck Layer : {}".format(btl_layer_str))
+        #btl_layer_str = 'dense_' + str(nl)
+        #nprint("Bottleneck Layer : {}".format(btl_layer_str))
 
-        ae_bottleneck_model = Model(inputs=self.ae_model.input, outputs=self.ae_model.get_layer(btl_layer_str).output)
-        ae_bottleneck_model.summary()
+        #ae_bottleneck_model = Model(inputs=self.ae_model.input, outputs=self.ae_model.get_layer(btl_layer_str).output)
+        #ae_bottleneck_model.summary()
 
-        ae_encode = ae_bottleneck_model.predict(x=X_scaled)
-        ae_encode_X = pd.DataFrame(data=ae_encode, index=df.index)
+        #ae_encode = ae_bottleneck_model.predict(x=X_scaled)
+        #ae_encode_X = pd.DataFrame(data=ae_encode, index=df.index)
         #print(ae_encode_X.head(5))
-        cols_ = {i:"AE"+str(i) for i in ae_encode_X.columns}
-        ae_encode_X.rename(columns=cols_, inplace=True)
+        #cols_ = {i:"AE"+str(i) for i in ae_encode_X.columns}
+        #ae_encode_X.rename(columns=cols_, inplace=True)
 
-        nprint(ae_encode_X.columns)
+        #nprint(ae_encode_X.columns)
 
         nprint("Updating {} Dataframe ".format(mode))
-        df = pd.concat([df.reset_index(),pca_encode_X,ae_encode_X.reset_index()],axis=1)
+        df = pd.concat([df.reset_index(),pca_encode_X],axis=1)
 
         return df
 

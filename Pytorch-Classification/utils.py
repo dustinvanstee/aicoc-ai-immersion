@@ -30,7 +30,7 @@ def viz_network(epoch, curves,model,use_cuda) :
     
     # Set the plot size here .. about 4units/row ()
     plt.figure(figsize=[20,8])
-    plt.figure()..subplots_adjust(hspace=1, wspace=1)
+    # plt.figure().subplots_adjust(hspace=1, wspace=1)
     
     # First plot the loss curves and accuracy
     ax1 = plt.subplot(2,4,1)

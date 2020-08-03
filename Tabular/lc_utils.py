@@ -415,7 +415,7 @@ def plot_histograms(df) :
         else :
             print("skipping column {} of type  {}".format(c,df[c].dtype))
 
-def bob_heatmap_lc(df,sortColumn, add_corr=False):
+def heatmap_lending_club(df,sortColumn, add_corr=False):
     df = df.drop(['id','index'], axis=1)
     df = df.sample(n=1000)
     # scale it all on a 0-1 range ....

@@ -84,7 +84,7 @@ def load_sample_data(CLASS_ENVIRONMENT) :
     elif(CLASS_ENVIRONMENT == 'acc') :
         location='/gpfs/home/s4s004/vanstee/2019-06-lendingclub-git/rawdata/'
         nprint("Setting data location to {}".format(location))
-        loanstats_csv_files = glob.glob(location + 'LoanStats_securev1_*csv.gz')  # 'LoanStats_secure*csv'
+        loanstats_csv_files = glob.glob(location + 'LoanStats_securev1_2016Q1*csv.gz')  # 'LoanStats_secure*csv'
     elif(CLASS_ENVIRONMENT == 'wsl-1231') :
         location='../datasets/'
         nprint("Setting data location to {}".format(location))
@@ -139,13 +139,17 @@ def quick_overview_1d_v2(df) :
     df_meta['pct_missing'] = 100 * (df_meta['nan_count'] / len(df))
 
     nprint("\n******************Generating Descriptive Statistics (numerical columns only) *****************************\n")
-    print(" running df.describe() ....")
+    #print(" running df.describe() ....")
     desc_df = df.describe().transpose()
     df_meta = df_meta.join(desc_df, how="outer")
 
     df_meta = df_meta.sort_values(by=['dtype'],ascending=False)
     df_meta = df_meta.transpose()
-    return df_meta
+
+    cat_cols = df.select_dtypes(include=['object']).columns
+    num_cols = df.select_dtypes(include=['float64','int']).columns
+
+    return (df_meta[cat_cols].iloc[0:4,:], df_meta[num_cols])
 
 
 def quick_overview_1d(df) :
@@ -204,12 +208,13 @@ def modify_loan_status(df, rate=0.10, probs=[0.65,0.35]) :
 
 
 
-def create_loan_default(df, enhance_df=True) :
+def create_loan_default(df, enhance_df=False) :
     # use a lamba function to encode multiple loan_status entries into a single 1/0 default variable
     # Add some extra loan defaults if avg_cur_bal > 10% of annual income...just to make it real
     #nprint("Unique values in loan_status")
     #print(df['loan_status'].value_counts())
     if(enhance_df == True) :
+        nprint("Warning : Modifying and enhancing loan status ..")
         df = modify_loan_status(df,rate=0.05,probs=[0.90,0.10])
         df = modify_loan_status(df,rate=0.1,probs=[0.80,0.20])
         df = modify_loan_status(df,rate=0.2,probs=[0.60,0.40])
@@ -258,6 +263,7 @@ def clean_lendingclub_data(df) :
 
 # This function is only useful for numeric columns .  Essentially, run a describe, and
 # remove any amount of columns that have values <= a sparsity threshold
+# old and defunct !!!
 def drop_sparse_numeric_columns(df, threshold=0.01) :
     nprint("Dropping columns with less than {} pct cells populated".format(threshold))
     class useless_columns(BaseEstimator, TransformerMixin):
@@ -290,6 +296,33 @@ def drop_sparse_numeric_columns(df, threshold=0.01) :
     return df
 
 
+def drop_sparse_columns(df, pct_missing_threshold=0.95) :
+    # threshold is interpreted as meaning this.  anything that exceeds number is elimiated
+    #
+    #
+
+    nprint("Dropping columns with greater than {} pct cells that are null".format(pct_missing_threshold))
+    nan_df = columns_with_nans(df)
+    nan_dict = nan_df.set_index('column_name').to_dict()
+    pct_dict_by_col = nan_dict['pct_missing']
+    # loop through columns and drop any column > 1-threshold NaNs
+    remove_col_list = []
+    for col in pct_dict_by_col.keys() :
+        # print(" aa {} {}".format(col, pct_dict_by_col[col]))
+        if(pct_dict_by_col[col] > pct_missing_threshold):
+            print("dropping column {} bc it has {} of nulls".format(col,pct_dict_by_col[col]))
+            remove_col_list.append(col)
+            
+    df = df.drop(columns=remove_col_list, axis=1)
+
+    return df
+
+
+
+
+
+# This list was manually built.  A better strategy would be to create 2 columns if NaN.  
+#  fill in value with median perhaps, and then add a binary indicator value for NaN ...
 def drop_columns(df) :
     nprint("Dropping columns based on lack of examples ..")
 
@@ -300,7 +333,7 @@ def drop_columns(df) :
     # loan_short_df[loan_short_df.isnull().any(axis=1)].shape
     # Print out rows with NaNs --> loan_short_df[loan_short_df.isnull().any(axis=1)].head()
     
-    drop_list = ['url','debt_settlement_flag_date','next_pymnt_d']
+    drop_list = ['url','next_pymnt_d','debt_settlement_flag_date'] # 
     drop_dates = ['payment_plan_start_date','last_pymnt_d','last_credit_pull_d']
     
     drop_nlp_cand = ['title','emp_title','desc']
@@ -335,21 +368,41 @@ def drop_columns(df) :
 
     return df
 
+# Currently manually imputed.  Use sklearn to do this better automatically
 def impute_columns(df) :
-    nprint("Imputing Values for some columns that are mostly populated")
+    nprint("Imputing Values for Float64 columns that are mostly populated")
+    # For any floating point, just set to mean for now ....
+    float_cols = df.select_dtypes(include=['float64']).columns
+    #print(float_cols)
+    for fc in float_cols:
+        print(fc)
+        nan_count = df[fc].isna().sum()
+        mean_value = df[fc].mean()
+        nprint("Filling {} values of {} with {}".format(nan_count, fc, mean_value))
+        df[fc] = df[fc].fillna(mean_value)
+
+    nprint("Adding category 'unknown' object columns that are mostly populated")
+    # For any floating point, just set to mean for now ....
+    obj_cols = df.select_dtypes(include=['object']).columns
+    for oc in obj_cols:
+        nan_count = df[oc].isna().sum()
+        cat_value = "unknown"
+        nprint("Filling {} values of {} with {}".format(nan_count, oc, cat_value))
+        df[oc] = df[oc].fillna(cat_value)
+    return df
 
     # Fill 0 candidates for now - Add justification later ...
-    df['percent_bc_gt_75'].fillna(0,inplace=True)
-    df['bc_open_to_buy'].fillna(0,inplace=True)
-    df['bc_util'].fillna(0,inplace=True)
-    df['pct_tl_nvr_dlq'].fillna(0,inplace=True)  # Percent trades never delinquent
-    df['avg_cur_bal'].fillna(3000,inplace=True)  # set to around lower 25% percentile
-    df['acc_open_past_24mths'].fillna(4,inplace=True)  # set to around lower 25% percentile
-    df['mort_acc'].fillna(1,inplace=True)  # set to around lower 25% percentile
-    
-    df['total_bal_ex_mort'].fillna(18000,inplace=True)# set to around lower 50% percentile
-    df['total_bc_limit'].fillna(7800,inplace=True)# set to around lower 50% percentile
-    return df
+    #df['percent_bc_gt_75'].fillna(0,inplace=True)
+    #df['bc_open_to_buy'].fillna(0,inplace=True)
+    #df['bc_util'].fillna(0,inplace=True)
+    #df['pct_tl_nvr_dlq'].fillna(0,inplace=True)  # Percent trades never delinquent
+    #df['avg_cur_bal'].fillna(3000,inplace=True)  # set to around lower 25% percentile
+    #df['acc_open_past_24mths'].fillna(4,inplace=True)  # set to around lower 25% percentile
+    #df['mort_acc'].fillna(1,inplace=True)  # set to around lower 25% percentile
+    #
+    #df['total_bal_ex_mort'].fillna(18000,inplace=True)# set to around lower 50% percentile
+    #df['total_bc_limit'].fillna(7800,inplace=True)# set to around lower 50% percentile
+    #return df
 
 
 # create emp_length indictor variable 
@@ -357,8 +410,9 @@ def impute_columns(df) :
 def handle_employee_length(df) :
     df['emp_bin'] = df['emp_length']
 
+    df['emp_bin'] = np.where(df['emp_bin'] =='unknown',0,df['emp_bin'])
     df['emp_bin'] = np.where(df['emp_bin'] =='< 1 year',0,df['emp_bin'])
-    df['emp_bin'] = np.where(df['emp_bin'] =='1 years',1,df['emp_bin'])
+    df['emp_bin'] = np.where(df['emp_bin'] =='1 year',1,df['emp_bin'])
     df['emp_bin'] = np.where(df['emp_bin'] =='2 years',2,df['emp_bin'])
     df['emp_bin'] = np.where(df['emp_bin'] =='3 years',3,df['emp_bin'])
     df['emp_bin'] = np.where(df['emp_bin'] =='4 years',4,df['emp_bin'])
@@ -368,6 +422,8 @@ def handle_employee_length(df) :
     df['emp_bin'] = np.where(df['emp_bin'] =='8 years',8,df['emp_bin'])
     df['emp_bin'] = np.where(df['emp_bin'] =='9 years',9,df['emp_bin'])
     df['emp_bin'] = np.where(df['emp_bin'] =='10+ years',10,df['emp_bin'])
+
+    df['emp_bin'] = df['emp_bin'].astype('float64')
     #nprint("Binning employee length into 3 categories")
     #def emp_func(row):
     #    if(isinstance(row['emp_length'], str)) :
@@ -396,14 +452,17 @@ def handle_revol_util(df) :
     #df['revol_util_1'] = df.apply(revol_util_func, axis=1)
     #df.drop(columns='revol_util',axis=1,inplace=True)
     df['revol_util_1'] = df['revol_util'].str.replace('%','')
+    df['revol_util_1'] = df['revol_util_1'].str.replace('unknown','0.00')
     df['revol_util_1'] = pd.to_numeric(df['revol_util_1'], errors='coerce')
-    
     df.drop(columns='revol_util',axis=1,inplace=True)
     return df
 
 
 def columns_with_nans(df) :
-    nprint(df.isna().sum())
+    nan_df= pd.DataFrame(df.isna().sum()).reset_index()
+    nan_df.columns =["column_name","nan_count"]
+    nan_df["pct_missing"] = nan_df["nan_count"] / len(df)
+    return nan_df
 
 # dropping rows with lots of NaNs
 def drop_rows(df) :
@@ -425,6 +484,8 @@ def create_time_features(df) :
         def transform(self,X,y=None) :
             assert isinstance(X, pd.DataFrame)
             X = X.copy()
+            # remove rows with missing dates ...
+            X = X[X["earliest_cr_line"]!="unknown"]
             # turn MM-YYYY into YYYY-MM-DD
             X['issue_d'] = X['issue_d'].map(lambda x: datetime.strptime(str(x), "%b-%Y") if(not(pd.isnull(x))) else 0)
             X['earliest_cr_line'] = X['earliest_cr_line'].map(lambda x: datetime.strptime(str(x), "%b-%Y") if(not(pd.isnull(x))) else 0)
@@ -484,7 +545,7 @@ def plot_histograms(df) :
         else :
             print("skipping column {} of type  {}".format(c,df[c].dtype))
 
-def bob_heatmap_lc(df,sortColumn, add_corr=False):
+def heatmap_lending_club(df,sortColumn, add_corr=False):
     df = df.drop(['id','index'], axis=1)
     df = df.sample(n=1000)
     # scale it all on a 0-1 range ....
@@ -670,9 +731,11 @@ class lendingclub_ml:
         else :
             cols_ = ['AE0','AE1','AE2','AE3','AE4','AE5']
 
-        default_colors = self.test_df['default'].apply(lambda x : 'red' if x == 1 else 'green')
+        visdf = self.test_df # .sample(2000)
 
-        scatter_matrix(self.test_df[cols_], alpha=0.1, figsize=[10,10], grid=True, c=default_colors, diagonal='kde')
+        default_colors = visdf['default'].apply(lambda x : 'red' if x == 1 else 'green')
+
+        scatter_matrix(visdf[cols_], alpha=0.1, figsize=[10,10], grid=True, c=default_colors, diagonal='kde')
         #scatter_matrix(encode_X[cols_], alpha=0.4, figsize=[10,10], grid=True)
 
         #marker='o',c=pcomps.Churn.apply(lambda x:churn_colors[x]
@@ -680,15 +743,17 @@ class lendingclub_ml:
 
 
     def drop_pca_ae_cols(self, df) :
+        #nprint(df.columns)
+
         drop_cols = [x for x in df.columns if 'PC' in x]
         if(len(drop_cols) > 0) :
             df = df.drop(drop_cols,axis=1)
-        drop_cols = [x for x in df.columns if 'AE' in x]
-        if(len(drop_cols) > 0) :
-            df = df.drop(drop_cols,inplace=True,axis=1)
+        #drop_cols = [x for x in df.columns if 'AE' in x]
+        #if(len(drop_cols) > 0) :
+            #df = df.drop(drop_cols,inplace=True,axis=1)
         return df
 
-    def update_train_test_df(self) :
+    def add_pca_columns_to_df(self) :
         self.train_df = self.update_df(self.train_df, mode='train')
         self.test_df  = self.update_df(self.test_df, mode='test')
 
@@ -711,32 +776,32 @@ class lendingclub_ml:
         nprint("Creating new columns : {}".format(cols_))
         pca_encode_X.rename(columns=cols_, inplace=True)
 
-        nprint("Adding AE columns next")
+        #nprint("Adding AE columns next")
         #outputs = [layer.output for layer in self.ae_model.layers]
-        self.ae_model.summary()
+        #self.ae_model.summary()
 
-        nprint("Grabbing AE Bottleneck layer")
-        nl = len(self.ae_model.layers)
-        nprint("Num Layers : {}".format(nl))
+        #nprint("Grabbing AE Bottleneck layer")
+        #nl = len(self.ae_model.layers)
+        #nprint("Num Layers : {}".format(nl))
 
-        nl = int((nl - 2)/2)  # strip off front/back ...find middle.
+        #nl = int((nl - 2)/2)  # strip off front/back ...find middle.
 
-        btl_layer_str = 'dense_' + str(nl)
-        nprint("Bottleneck Layer : {}".format(btl_layer_str))
+        #btl_layer_str = 'dense_' + str(nl)
+        #nprint("Bottleneck Layer : {}".format(btl_layer_str))
 
-        ae_bottleneck_model = Model(inputs=self.ae_model.input, outputs=self.ae_model.get_layer(btl_layer_str).output)
-        ae_bottleneck_model.summary()
+        #ae_bottleneck_model = Model(inputs=self.ae_model.input, outputs=self.ae_model.get_layer(btl_layer_str).output)
+        #ae_bottleneck_model.summary()
 
-        ae_encode = ae_bottleneck_model.predict(x=X_scaled)
-        ae_encode_X = pd.DataFrame(data=ae_encode, index=df.index)
+        #ae_encode = ae_bottleneck_model.predict(x=X_scaled)
+        #ae_encode_X = pd.DataFrame(data=ae_encode, index=df.index)
         #print(ae_encode_X.head(5))
-        cols_ = {i:"AE"+str(i) for i in ae_encode_X.columns}
-        ae_encode_X.rename(columns=cols_, inplace=True)
+        #cols_ = {i:"AE"+str(i) for i in ae_encode_X.columns}
+        #ae_encode_X.rename(columns=cols_, inplace=True)
 
-        nprint(ae_encode_X.columns)
+        #nprint(ae_encode_X.columns)
 
         nprint("Updating {} Dataframe ".format(mode))
-        df = pd.concat([df.reset_index(),pca_encode_X,ae_encode_X.reset_index()],axis=1)
+        df = pd.concat([df.reset_index(),pca_encode_X],axis=1) #ae_encode_X.reset_index()
 
         return df
 

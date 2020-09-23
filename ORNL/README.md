@@ -12,11 +12,11 @@ Content in the first column | Content in the second column
 ___
 To setup an environment that can run the labs shown, you will need to use IBM's WML-CE (now called OPEN-CE) module with some additional packages.  To create your own conda virtual environment with all the dependencies, you can use the provided requirements.txt file in this repo with the following commands.
 
-1.  Load WML-CE to get access to conda
-module load ibm-wml-ce/1.7.0-1
+1.  Load WML-CE to get access to conda<br>
+`module load ibm-wml-ce/1.7.0-1`
 
-2. Create a conda virtual environment cloned off most recent WML-CE with extra pkgs
-conda env create -f wmlce17-ornl.yml
+2. Create a conda virtual environment cloned off most recent WML-CE with extra pkgs<br>
+`conda env create -f wmlce17-ornl.yml`
 
 
 

@@ -19,6 +19,13 @@ int main(int argc, const char* argv[]) {
     std::cerr << "error loading the model\n";
     return -1;
   }
+  // Create a vector of inputs.
+  std::vector<torch::jit::IValue> inputs;
+  inputs.push_back(torch::ones({2, 2}));
+
+  // Execute the model and turn its output into a tensor.
+  at::Tensor output = module.forward(inputs).toTensor();
+  std::cout << output.slice(/*dim=*/1, /*start=*/0, /*end=*/5) << '\n';
 
   std::cout << "ok\n";
 }

@@ -47,3 +47,19 @@ To setup an environment that can run the labs shown, you will need to use IBM's 
 If all goes well after this process, you can start you conda environment by running<br> `conda activate wmlce17-ornl`
 
 We will be using this environment to submit batch jobs to the cluster.
+
+## Running Jupyter Notebook
+This step is not required for the lab but mainly informational.  Note you should not be running anything on login nodes that require heavy compute or GPU as this is a highly shared resource.  This is mainly for viewing or light debug/testing.
+___
+To view a jupyter notebook from the login node you need two terminals
+In terminal 1 
+1. login to summit
+2. activate conda environment (as shown above)
+3. launch jupyter notebook or jupyter lab 
+jupyter notebook --no-browser --ip=\`hostname -f\` --port=[PORT]
+
+
+In terminal 2 
+1. forward ssh ports from login node to your laptop
+ssh -N -L XXXX:loginYY.summit.olcf.ornl.gov:XXXX  userid@summit.olcf.ornl.gov
+

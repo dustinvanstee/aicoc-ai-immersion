@@ -44,6 +44,6 @@ To setup an environment that can run the labs shown, you will need to use IBM's 
 3. Create a conda virtual environment cloned off most recent WML-CE with extra pkgs (accept terms by pressing 1 + enter) <br>
 `conda env create -f wmlce17-ornl.yml`
 
-If all goes well after this process, you can start you conda environment by running `conda activate wmlce17-ornl`
+If all goes well after this process, you can start you conda environment by running<br> `conda activate wmlce17-ornl`
 
 We will be using this environment to submit batch jobs to the cluster.

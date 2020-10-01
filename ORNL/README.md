@@ -26,10 +26,11 @@ Overview of Neural Networks 	|11:15 AM - 11:45 AM
 Lab 3: Intro to PyTorch (w/lecture)	|11:45 AM - 1:00 PM
 Break	|1:00 PM - 1:15 PM
 Integrating Trained Models into C++/FORTRAN Applications	|1:15 PM - 1:45 PM
-Lab 4: E2E Deep Learning (Training) Using Deep Learning as universal function approximator	|1:45 PM - 3:00 PM
+Lab 4: E2E Deep Learning (Training) Using Deep Learning as a universal function approximator	|1:45 PM - 3:00 PM
 Break	|3:00 PM - 3:15 PM
 Lab 5: E2E Deep Learning (Inference) Function Representation Integrated into Example Application |3:15 PM - 5:00 PM
 Closing Remarks	|5:00 PM - 5:15 PM
+**************************************************************************************************|*****
 
 
 # Lab0 :Conda Environment Setup

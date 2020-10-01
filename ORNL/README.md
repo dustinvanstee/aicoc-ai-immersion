@@ -12,7 +12,7 @@ Intersection of AI and HPC	|11:45 AM - 12:15 PM
 Summit System Overview	|12:15 PM - 12:30 PM
 Python Environments on Summit	|12:30 PM - 1:00 PM
 Break	|1:00 PM - 1:15 PM
-Introduction to WML-CE	|1:15 PM - 1:45 PM 
+Introduction to OPEN-CE	|1:15 PM - 1:45 PM 
 Lab 0: Getting Started on Summit	|1:45 PM - 2:00 PM
 Lab 1: Python AI Essentials for Beginners	|2:00 PM - 3:30 PM
 Break	|3:30 PM - 3:45 PM

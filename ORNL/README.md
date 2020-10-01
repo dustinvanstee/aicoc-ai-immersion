@@ -55,11 +55,11 @@ To view a jupyter notebook from the login node you need two terminals
 In terminal 1 
 1. login to summit
 2. activate conda environment (as shown above)
-3. launch jupyter notebook or jupyter lab 
+3. launch jupyter notebook or jupyter lab <br>
 jupyter notebook --no-browser --ip=\`hostname -f\` --port=[PORT]
 
 
 In terminal 2 
-1. forward ssh ports from login node to your laptop
+1. forward ssh ports from login node to your laptop<br>
 ssh -N -L XXXX:loginYY.summit.olcf.ornl.gov:XXXX  userid@summit.olcf.ornl.gov
 

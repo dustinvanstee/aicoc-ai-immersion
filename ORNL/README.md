@@ -16,7 +16,7 @@ Introduction to OPEN-CE	|1:15 PM - 1:45 PM
 Lab 0: Getting Started on Summit	|1:45 PM - 2:00 PM
 Lab 1: Python AI Essentials for Beginners	|2:00 PM - 3:30 PM
 Break	|3:30 PM - 3:45 PM
-Lab 2: GPU accelerated dataframes - Rapids / Dask Lab 	                         |3:45 PM - 5:15 PM
+Lab 2: GPU accelerated dataframes - Rapids Lab 	                         |3:45 PM - 5:15 PM
 *****************************************************************************************************|*****
 
 **Day2**

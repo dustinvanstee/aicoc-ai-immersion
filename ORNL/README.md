@@ -32,7 +32,7 @@ Lab 5: E2E Deep Learning (Inference) Function Representation Integrated into Exa
 Closing Remarks	|5:00 PM - 5:15 PM
 
 
-# Conda Environment Setup
+# Lab0 :Conda Environment Setup
 ___
 To setup an environment that can run the labs shown, you will need to use IBM's WML-CE (now called OPEN-CE) module with some additional packages.  To create your own conda virtual environment with all the dependencies, you can use the provided requirements.txt file in this repo with the following commands.
 
@@ -41,12 +41,9 @@ To setup an environment that can run the labs shown, you will need to use IBM's 
 2.  Load WML-CE to get access to conda<br>
 `module load ibm-wml-ce/1.7.0-1`
 
-3. Create a conda virtual environment cloned off most recent WML-CE with extra pkgs<br>
+3. Create a conda virtual environment cloned off most recent WML-CE with extra pkgs (accept terms by pressing 1 + enter) <br>
 `conda env create -f wmlce17-ornl.yml`
 
+If all goes well after this process, you can start you conda environment by running `conda activate wmlce17-ornl`
 
-
-add some links to content
-
-
-
+We will be using this environment to submit batch jobs to the cluster.

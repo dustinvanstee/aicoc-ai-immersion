@@ -39,9 +39,6 @@ from itertools import compress
 import itertools
 import operator
 
-#CLASS_ENVIRONMENT = ["wsl-1231" : "" , 
-#print("CLASS_ENVIRONMENT = {}".format(CLASS_ENVIRONMENT))
-
 def set_env(CLASS_ENVIRONMENT) :
     if(CLASS_ENVIRONMENT == 'dv-mac' or CLASS_ENVIRONMENT == 'wsl-1231') :
         from keras.layers import Input, Dense
@@ -54,13 +51,6 @@ def set_env(CLASS_ENVIRONMENT) :
         from tensorflow.keras.models import Model
         from tensorflow.keras import regularizers
         from tensorflow.keras.models import load_model
-    elif(CLASS_ENVIRONMENT == 'acc') :
-        a=1
-        # import tensorflow as tf
-        # from tensorflow.python.keras.layers import Input, Dense
-        # from tensorflow.python.keras.models import Model
-        # from tensorflow.python.keras import regularizers
-        # from tensorflow.python.keras.models import load_model
     else :
         print("ERROR loading CLASS_ENVIRONMENT {}".format(CLASS_ENVIRONMENT))
 
@@ -89,7 +79,10 @@ def load_sample_data(CLASS_ENVIRONMENT) :
         location='../datasets/'
         nprint("Setting data location to {}".format(location))
         loanstats_csv_files = glob.glob(location + 'LoanStats_securev1*csv.gz')  # 'LoanStats_secure*csv'
-  
+    elif(CLASS_ENVIRONMENT == 'ornl') :
+        location='../Tabular/' 
+        nprint("Setting data location to {}".format(location))
+        loanstats_csv_files = glob.glob(location + 'ldata2016.csv.gz')  # 'LoanStats_secure*csv'
     else :
         nprint("Setting data location to default {}".format(location))
         loanstats_csv_files = glob.glob(location + 'LoanStats_securev1_2016Q1*csv')  # 'LoanStats_secure*csv'

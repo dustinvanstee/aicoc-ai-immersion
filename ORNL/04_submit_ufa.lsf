@@ -1,9 +1,12 @@
 #BSUB -P VEN201
-#BSUB -J pytorch_cifar.py
-#BSUB -o lsf/pytorch_cifar.%J
+#BSUB -J ufa
+#BSUB -o lsf_out/ufa.%J
 #BSUB -nnodes 1
-#BSUB -W 00:10
+#BSUB -W 00:15
 
 date
-export OMP_NUM_THREADS=1
-jsrun -n1 -c2 -g1 -a1 module load ibm-wml-ce/1.7.0-1; conda activate powerai-ornl; python ../py_aicoc/pytorch_cifar.py
+#export OMP_NUM_THREADS=1
+module load ibm-wml-ce/1.7.0-1
+conda activate wmlce17-ornl
+
+jsrun -n1 -c2 -g1 -a1 python ../py_aicoc/ufa.py

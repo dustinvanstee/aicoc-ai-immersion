@@ -1,9 +1,7 @@
 name: wmlce17-ornl
 channels:
-  - file:///sw/sources/ibm-wml-ce/conda-channel
   - conda-forge
   - https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda
-  - file:///sw/sources/ibm-wml-ce/conda-channel/
   - https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/
   - defaults
 dependencies:
@@ -43,9 +41,6 @@ dependencies:
   - cmake=3.14.0=h52cb24c_0
   - coverage=4.5.4=py36h7b6447c_0
   - cryptography=2.8=py36h1ba5d50_0
-  - cudatoolkit=10.2.89=680.g0f7a43a
-  - cudatoolkit-compat=10.2.89=70.g52c6df3
-  - cudatoolkit-dev=10.2.89=680.g0f7a43a
   - cudf=0.11.0=cuda10.2_py36_676.g765efe2
   - cudnn=7.6.5_10.2=650.g338a052
   - cuml=0.11.0=cuda10.2_py36_663.g2f1335f
@@ -60,7 +55,6 @@ dependencies:
   - dask-cuda=0.11.0=py36_630.g2290d8e
   - dask-cudf=0.11.0=py36_631.g6fc57e1
   - dask-xgboost=0.1.9=py36_647.g2eb49b6
-  - ddl=1.5.1.1=py36_750_SUMMIT.gcfbac94
   - ddl-tensorflow=1.5.1=py36_1073.g105e407
   - decorator=4.4.1=py_0
   - defusedxml=0.6.0=py_0
@@ -216,7 +210,6 @@ dependencies:
   - plotly=4.10.0=py_0
   - pluggy=0.13.1=py36_0
   - powerai=1.7.0=679.g5b5a006
-  - powerai-license=1.7.0=169_SUMMIT.ga16f7c6
   - powerai-rapids=1.7.0=616.g6689446
   - powerai-release=1.7.0=627.g1c389a2
   - powerai-tools=1.7.0=623.g843ad38
@@ -269,7 +262,6 @@ dependencies:
   - snapml-spark=1.6.0=py_1020.gc01d7a8
   - snappy=1.1.7=h1532aa0_3
   - sortedcontainers=2.1.0=py36_0
-  - spectrum-mpi=10.03=64_SUMMIT.g3947c96
   - sqlite=3.31.1=h7b6447c_0
   - tabulate=0.8.2=py36_0
   - tbb=2020.0=hfd86e86_0

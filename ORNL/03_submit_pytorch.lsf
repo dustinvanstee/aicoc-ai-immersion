@@ -9,4 +9,11 @@ date
 module load ibm-wml-ce/1.7.0-1
 conda activate wmlce17-ornl
 
+# seems like compute nodes cant download this ..
+if [ ! -d cifar10_data ]; then
+  wget http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz -P cifar10_data
+fi
+
+
+
 jsrun -n1 -c2 -g1 -a1 python ../py_aicoc/pytorch_cifar.py

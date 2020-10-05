@@ -261,6 +261,7 @@ dependencies:
   - scikit-image=0.15.0=py36he6710b0_0
   - scikit-learn=0.22.1=py36h22eb022_0
   - scipy=1.3.1=py36he2b7bc3_0
+  - seaborn=0.11.0=py_0
   - send2trash=1.5.0=py36_0
   - setuptools=45.2.0=py36_0
   - simsearch=1.6.0=py36_882.ga3f4a67
@@ -318,7 +319,14 @@ dependencies:
     - fastcore==1.0.13
     - fastscript==1.0.0
     - iapws==1.5.2
+    - jupyter-contrib-core==0.3.3
+    - jupyter-contrib-nbextensions==0.5.1
+    - jupyter-highlight-selected-word==0.2.0
+    - jupyter-latex-envs==1.4.6
+    - jupyter-nbextensions-configurator==0.4.1
     - livelossplot==0.5.3
+    - lxml==4.5.2
     - nbdev==1.0.18
+    - wordcloud==1.8.0
 prefix: /ccs/home/vanstee/.conda/envs/powerai-ornl
 

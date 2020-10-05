@@ -1,21 +1,23 @@
 # Dask on Summit
-00_dask_on_summit.ipynb
 
-## Running Jupyter Notebook
-This step is not required for the lab but mainly informational.  Note you should not be running anything on login nodes that require heavy compute or GPU as this is a highly shared resource.  This is mainly for viewing or light debug/testing.
+
+## Running Dask on Summit via Ipython Terminal
+You will need 2 terminals and a browser for this lab
 ___
-To view a jupyter notebook from the login node you need two terminals
 In terminal 1 
 1. login to summit
-2. activate conda environment (as shown above)
-3. launch jupyter notebook or jupyter lab <br>
-jupyter notebook --no-browser --ip=\`hostname -f\` --port=[PORT]
+2. activate conda environment 
+`conda activate wmlce17-ornl`
+
+3. launch ipython <br>
+ipython
 
 
-In terminal 2 
-1. forward ssh ports from login node to your laptop<br>
+In terminal 2
+1. forward ssh ports from login node to your laptop.  Here XXXX should be an unused port on the system.  Use 7777 as example<br> Pay attention to making sure the right 
 ssh -N -L XXXX:loginYY.summit.olcf.ornl.gov:XXXX  userid@summit.olcf.ornl.gov
 
+[WIP]
 
 ipython
 

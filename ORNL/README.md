@@ -49,4 +49,48 @@ If all goes well after this process, you can start you conda environment by runn
 
 We will be using this environment to submit batch jobs to the cluster.
 
+# Lab1 : Submit AI Essentials Notebook
+___
+1. cd to this directory 
+`cd ORNL`
+
+2. Batch submission to LSF
+`bsub 01_submit_aiessentials.lsf`
+
+# Lab2 : Submit Rapids example
+___
+1. cd to this directory 
+`cd ORNL`
+
+2. Batch submission to LSF
+`bsub 02_submit_rapids.lsf`
+
+# Lab3 : Submit Pytorch Image Classifier
+___
+1. cd to this directory 
+`cd ORNL`
+
+2. Batch submission to LSF
+`bsub 03_submit_pytorch.lsf`
+
+# Lab4 : Submit Universal Function Approximator Training
+___
+1. cd to this directory 
+`cd ORNL`
+
+2. Batch submission to LSF
+`bsub 04_submit_ufa_train.lsf`
+
+# Lab5 : Submit Universal Function Approximator Inference
+___
+1. cd to this directory 
+`cd ORNL`
+
+2. Batch submission to LSF
+`bsub 05_submit_ufa_inf.lsf`
+
+# Dask demo 
+
+[link to readme](https://github.com/dustinvanstee/aicoc-ai-immersion/ORNL/blob/branch/other_file.md)
+
 

@@ -3,11 +3,13 @@
 #BSUB -o lsf_out/rapids.%J
 #BSUB -nnodes 1
 #BSUB -W 00:10
+#BSUB -U DL
 
 date
 #export OMP_NUM_THREADS=1
 module load ibm-wml-ce/1.7.0-1
 conda activate wmlce17-ornl
 
+# Note on why i had to add smpiargs for this particular job
 # https://github.com/radical-cybertools/radical.pilot/issues/1830
 jsrun --smpiargs="off" -n1 -c1 -g1 -a1 python ../py_aicoc/rapids.py

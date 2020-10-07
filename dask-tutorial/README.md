@@ -21,13 +21,13 @@ ___
 ----
 ## Terminal 1 ipython
 
-'''
+```
 import sys
 from dask_jobqueue import LSFCluster
-'''
+
 
 ### Per node specification
-`dask_worker_prefix = "jsrun -n1 -a1 -g0 -c2"
+dask_worker_prefix = "jsrun -n1 -a1 -g0 -c2"
 
 cluster = LSFCluster(
     scheduler_options={"dashboard_address": ":3761"},
@@ -42,12 +42,12 @@ cluster = LSFCluster(
     use_stdin=False,
     python= f"{dask_worker_prefix} {sys.executable}"
 )
-`
+
 print(cluster.job_script())
 
 from dask.distributed import Client
 client = Client(cluster)
-
+```
 
 
 import dask.array as da

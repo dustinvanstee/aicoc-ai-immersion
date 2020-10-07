@@ -7,8 +7,8 @@ ___
 ___
 To setup an environment that can run the labs shown, you will need to use IBM's WML-CE (now called OPEN-CE) module with some additional packages.  To create your own conda virtual environment with all the dependencies, you can use the provided requirements.txt file in this repo with the following commands.
 
-1.  Clone this repo and cd to ORNL directory
-`https://github.com/dustinvanstee/aicoc-ai-immersion.git`
+1.  Clone this repo and cd to ORNL directory<br>
+`https://github.com/dustinvanstee/aicoc-ai-immersion.git`<br>
 `cd aicoc-ai-immersion/ORNL`
 
 2.  Load WML-CE to get access to conda<br>
@@ -26,15 +26,15 @@ ___
 1. cd to this directory 
 `cd ORNL`
 
-2. Batch submission to LSF
+2. Batch submission to LSF<br>
 `bsub 01_submit_aiessentials.lsf`
 
 # Lab2 : Submit Rapids example
 ___
-1. cd to this directory 
+1. cd to this directory <br>
 `cd ORNL`
 
-2. Batch submission to LSF
+2. Batch submission to LSF<br>
 `bsub 02_submit_rapids.lsf`
 
 Stretch Assignment :  examine how scaling dataset affects GPU speedup 

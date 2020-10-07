@@ -67,6 +67,6 @@ ___
 
 # Dask demo 
 
-[link to readme](https://github.com/dustinvanstee/aicoc-ai-immersion/ORNL/blob/branch/other_file.md)
+[link to demo example](https://github.com/dustinvanstee/aicoc-ai-immersion/tree/master/dask-tutorial)
 
 

@@ -3,6 +3,7 @@
 #BSUB -o lsf_out/ai_essentials.%J
 #BSUB -nnodes 1
 #BSUB -W 00:05
+#BSUB -U DL
 
 date
 module load ibm-wml-ce/1.7.0-1

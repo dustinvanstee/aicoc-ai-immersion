@@ -8,6 +8,8 @@ ___
 To setup an environment that can run the labs shown, you will need to use IBM's WML-CE (now called OPEN-CE) module with some additional packages.  To create your own conda virtual environment with all the dependencies, you can use the provided requirements.txt file in this repo with the following commands.
 
 1.  Clone this repo and cd to ORNL directory
+`https://github.com/dustinvanstee/aicoc-ai-immersion.git`
+`cd aicoc-ai-immersion/ORNL`
 
 2.  Load WML-CE to get access to conda<br>
 `module load ibm-wml-ce/1.7.0-1`

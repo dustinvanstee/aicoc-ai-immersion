@@ -59,6 +59,7 @@ client
 
 
 ## Numpy Example
+---
 ```
 import dask.array as da
 # 25x10^8 B element array , 400 chunks
@@ -78,6 +79,7 @@ y.persist()
 ```
 
 ## Pandas Example
+---
 ```
 # import dask
 import dask.dataframe as dd
@@ -113,9 +115,9 @@ ddf.corr().compute()
 merge(ddf_small, ddf_small,on='id')# [['loan_amnt', 'funded_amnt']]
 ```
 
-
-
-print(y.compute())
+## More Tutorials here 
+---
+https://github.com/dask/dask-tutorial
 
 
 

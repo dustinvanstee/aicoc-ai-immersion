@@ -30,7 +30,7 @@ from dask_jobqueue import LSFCluster
 dask_worker_prefix = "jsrun -n1 -a1 -g0 -c2"
 
 cluster = LSFCluster(
-    scheduler_options={"dashboard_address": ":3761"},
+    scheduler_options={"dashboard_address": ":5051"},
     cores=8,
     processes=1,     
     memory="4 GB",
@@ -43,16 +43,79 @@ cluster = LSFCluster(
     python= f"{dask_worker_prefix} {sys.executable}"
 )
 
+### View LSF bsub job
 print(cluster.job_script())
 
+# Create client - https://distributed.dask.org/en/latest/client.html
 from dask.distributed import Client
 client = Client(cluster)
+client
+```
+## Add some nodes to dask cluster
+`cluster.scale(4)`
+
+## Use bjobs to view job status
+`watch bjobs`
+
+
+## Numpy Example
+```
+import dask.array as da
+# 25x10^8 B element array , 400 chunks
+x = da.random.random([50000,50000], chunks=[2500,2500])
+
+# lazy execution .
+y = x.T ** x - x.mean()
+
+# trigger computation
+# Note if you run y.compute() the result is not saved ... 
+# each request triggers computation..
+print(y.compute())
+print(y.compute())
+
+# Now lets pin it to memory ... and re-run
+y.persist()
+```
+
+## Pandas Example
+```
+# import dask
+import dask.dataframe as dd
+ddf = dd.read_csv("./dask-tutorial/ldata2016.csv", blocksize=15e6,dtype=dtype) # , compression="gzip")
+#
+#ddf = ddf.repartition(npartitions=5)
+ddf
+
+# Standard operations example
+filtered_df = ddf[ddf["loan_amnt"] > 15000]
+answer = filtered_df.compute()
+#compare 
+len(answer)
+len(ddf)
+
+
+print(ddf.columns)
+# ok, lets count NaNs ..
+ddf.isna().sum().compute()
+
+# well dask doesnt do well with NaNs,  let just do a few colums ..
+ddf_small = ddf[[ 'id', 'loan_amnt', 'funded_amnt','revol_bal','dti']]
+
+# Check NaNs 
+ddf_small.isna().sum().compute()
+
+ddf_small.describe().compute()
+
+# correlation
+ddf.corr().compute()
+
+# Do one join.. cartesian ?
+merge(ddf_small, ddf_small,on='id')# [['loan_amnt', 'funded_amnt']]
 ```
 
 
-import dask.array as da
-# 2.5 B element array , 500 chunks
-x = da.random.random([50000,50000], chunks=[2500,2500])
+
+print(y.compute())
 
 
 

@@ -1,5 +1,5 @@
 
-# ML/DL Workshop - ORNL Agenda
+# OLCF Supercomputing - ML/DL Workshop
 ## Oct 7/8 2020
 ___
 
@@ -34,6 +34,10 @@ ___
 
 2. Batch submission to LSF
 `bsub 02_submit_rapids.lsf`
+
+Stretch Assignment :  examine how scaling dataset affects GPU speedup 
+Hint : change rapids.py DATA_DOUBLE_FACTOR from 2 to 3 to 4 and see what happens
+
 
 # Lab3 : Submit Pytorch Image Classifier
 ___

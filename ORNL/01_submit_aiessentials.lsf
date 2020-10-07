@@ -8,4 +8,4 @@
 date
 module load ibm-wml-ce/1.7.0-1
 conda activate wmlce17-ornl
-jsrun -n1 -c2 -g1 -a1 python ../py_aicoc/ai_essentials.py
+jsrun -n1 -c2 -g0 -a1 python ../py_aicoc/ai_essentials.py

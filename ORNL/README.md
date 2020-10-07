@@ -37,32 +37,32 @@ ___
 2. Batch submission to LSF<br>
 `bsub 02_submit_rapids.lsf`
 
-Stretch Assignment :  examine how scaling dataset affects GPU speedup 
-Hint : change rapids.py DATA_DOUBLE_FACTOR from 2 to 3 to 4 and see what happens
+Stretch Assignment :  examine how scaling dataset affects GPU speedup <br>
+Hint : change rapids.py DATA_DOUBLE_FACTOR from 2 to 3 to 4 and see what happens<br>
 
 
 # Lab3 : Submit Pytorch Image Classifier
 ___
-1. cd to this directory 
+1. cd to this directory <br>
 `cd ORNL`
 
-2. Batch submission to LSF
+2. Batch submission to LSF<br>
 `bsub 03_submit_pytorch.lsf`
 
 # Lab4 : Submit Universal Function Approximator Training
 ___
-1. cd to this directory 
+1. cd to this directory <br>
 `cd ORNL`
 
-2. Batch submission to LSF
+2. Batch submission to LSF<br>
 `bsub 04_submit_ufa_train.lsf`
 
 # Lab5 : Submit Universal Function Approximator Inference
 ___
-1. cd to this directory 
+1. cd to this directory <br>
 `cd ORNL`
 
-2. Batch submission to LSF
+2. Batch submission to LSF<br>
 `bsub 05_submit_ufa_inf.lsf`
 
 # Dask demo 

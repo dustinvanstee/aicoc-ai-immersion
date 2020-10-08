@@ -38,6 +38,9 @@ import torch.nn.functional as F
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import cifar_utils
+import os
+# Write checkpoint data to directory where this notebook is running..
+os.environ['TORCH_HOME'] = '.' #setting the environment variable
 
 
 

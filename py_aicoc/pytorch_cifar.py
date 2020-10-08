@@ -2,7 +2,9 @@
 
 __all__ = ['xt', 'xt_test', 'train_set', 'test_set', 'batch_size', 'train_loader', 'test_loader', 'labels_map',
            'NetCNN3L', 'model_summary', 'weights_uniform_random', 'weights_xavier', 'train_test', 'curves',
-           'reset_weights', 'model', 'use_cuda', 'optimizer', 'criterion', 'EPOCHS']
+           'reset_weights', 'model', 'use_cuda', 'optimizer', 'criterion', 'TRAINING_EPOCHS', 'resnet18', 'xfer_model',
+           'data_transforms', 'batch_size', 'train_loader', 'test_loader', 'reset_weights', 'use_cuda', 'optimizer',
+           'criterion', 'curves', 'TRAINING_EPOCHS']
 
 # Cell
 # Setup in notebook flag
@@ -11,7 +13,11 @@ try: from nbdev.imports import IN_NOTEBOOK
 except: IN_NOTEBOOK=False
 
 if IN_NOTEBOOK :
+    print("In Notebooke mode")
+    # Adding python utils library directory
     sys.path.append("../py_aicoc")
+else :
+    print("Running in batch mode")
 
 
 # Cell
@@ -105,12 +111,18 @@ class NetCNN3L(nn.Module):
         # in_NCHW=[Nx3x32x32 image], 3x3 square kernel, out_NCHW=[Nx32x32x32 image]
         # cin=3,cout=32
         self.conv1_1 = nn.Conv2d(3, 32, kernel_size=(3,3),padding=(1,1))  # same padding
-        # in_NCHW=[Nx3x32x32 image], 3x3 square kernel, out_NCHW=[Nx32x32x32 image]
+
+        # in_NCHW=[Nx32x32x32 image], 3x3 square kernel, out_NCHW=[Nx32x32x32 image]
         self.conv1_2 = nn.Conv2d(32, 32, kernel_size=(3,3),padding=(1,1))# same padding
+
+        # max pool here, shrinks 32x32 - > 16x16 image
+
         # in_NCHW=[Nx32x16x16 image], 3x3 square kernel, out_NCHW=[Nx64x16x16 image]
         self.conv2_1 = nn.Conv2d(32, 64, kernel_size=(3,3),padding=(1,1))
+
         # in_NCHW=[Nx64x16x16 image], 3x3 square kernel, out_NCHW=[Nx64x16x16 image]
         self.conv2_2 = nn.Conv2d(64, 64, kernel_size=(3,3),padding=(1,1))
+        # max pool here, shrinks 16x16 - > 8x8 image
 
         # an affine operation: y = Wx + b
         # 64 x 8 x 8
@@ -259,6 +271,13 @@ curves = {'train' : [], 'test' : []}
 # Cell
 # reload_libs()
 # Training run here ...
+
+print("****************************************")
+print("*  Custom Model Example                *")
+print("****************************************")
+
+
+
 reset_weights=True
 
 # Instantiate Model
@@ -280,14 +299,10 @@ if(reset_weights) :
 if(reset_weights) :
     curves = {'train' : [], 'test' : []}
 
-EPOCHS=None
-if IN_NOTEBOOK :
-    cifar_utils.viz_network(0,curves,model,use_cuda)
-    EPOCHS=7
-else :
-    EPOCHS=100
+TRAINING_EPOCHS=2
+if IN_NOTEBOOK : cifar_utils.viz_network(0,curves,model,use_cuda)
 
-for epoch in range(EPOCHS) :
+for epoch in range(TRAINING_EPOCHS) :
 
     train_res = train_test(model, epoch, train_loader, batch_size, use_cuda, mode='train')
     curves['train'].append(train_res)
@@ -303,3 +318,118 @@ for epoch in range(EPOCHS) :
                                                     100*float(train_res[1])/float(train_res[2])))
     print("Epoch:{} / Test loss : {} / Test  Accuracy:{:.02f}".format(epoch, test_res,
                                                     100*float(test_res[1])/float(test_res[2])))
+
+
+# Cell
+import torchvision.models as models
+resnet18 = models.resnet18(pretrained=True)
+
+xfer_model = resnet18
+
+
+# Cell
+## Drop last layer and bolt on my final layer
+for param in xfer_model.parameters():
+    param.requires_grad = True
+    # Replace the last fully-connected layer
+    # Parameters of newly constructed modules have requires_grad=True by default
+
+xfer_model.fc = nn.Linear(512, 10) # assuming that the fc7 layer has 512 neurons, otherwise change it
+xfer_model.cuda()
+model_summary(xfer_model)
+#for param in xfer_model.parameters():
+#    print(param.requires_grad)
+
+
+# Cell
+# Data augmentation and normalization for training
+# Just normalization for validation
+# see https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
+
+data_transforms = {
+    'train': transforms.Compose([
+        transforms.RandomResizedCrop(224),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+    'val': transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+}
+
+# Cell
+batch_size = 32
+
+# https://pytorch.org/docs/stable/data.html
+train_loader = torch.utils.data.DataLoader(
+                 dataset=train_set,
+                 batch_size=batch_size,
+                 shuffle=True)
+
+test_loader = torch.utils.data.DataLoader(
+                dataset=test_set,
+                batch_size=batch_size,
+                shuffle=False)
+
+
+print('Number of Training samples: ', len(train_set))
+print('Number of Test samples: ',     len(test_set))
+print('Batch Size : ',                batch_size)
+print('==>>> total training batches : {}'.format(len(train_loader)))
+print('==>>> total testing batches : {}'.format(len(test_loader)))
+#print('type {}'.format(type(train_fm_loader)))
+
+# Cell
+# reload_libs()
+# Training run here ...
+print("****************************************")
+print("*  Transfer Learning Example           *")
+print("****************************************")
+
+reset_weights=False
+
+# Instantiate Model
+
+# Enable GPU's
+use_cuda = True
+if use_cuda and reset_weights:
+    xfer_model = xfer_model.to("cuda")
+
+# create your optimizer
+optimizer = optim.Adam(xfer_model.parameters(), lr=0.0001)
+criterion = nn.CrossEntropyLoss()
+
+if(reset_weights) :
+    xfer_model.apply(weights_xavier)  # comment out this line for round 2
+    #model.apply(weights_xavier)         # uncomment this line for round 2
+
+# in your training loop:
+
+curves = {'train' : [], 'test' : []}
+TRAINING_EPOCHS=2
+
+if IN_NOTEBOOK : cifar_utils.viz_network(0,curves,xfer_model,use_cuda)
+
+for epoch in range(TRAINING_EPOCHS) :
+
+    train_res = train_test(xfer_model, epoch, train_loader, batch_size, use_cuda, mode='train',debug=False)
+    curves['train'].append(train_res)
+
+    if IN_NOTEBOOK : cifar_utils.viz_network(epoch,curves,xfer_model,use_cuda)
+
+    test_res = train_test(xfer_model, epoch, test_loader,batch_size, use_cuda, mode='test',debug=False)
+    curves['test'].append(test_res)
+
+    #print(curves)
+    #print("Epoch {} Train loss = {}".format(epoch, train_res))
+    #print("Epoch {} Test loss = {}".format(epoch, test_res))
+
+    print("**")
+    print("Epoch:{} / Train loss: {} / Train Accuracy:{:.02f}".format(epoch, train_res,
+                                                        100*float(train_res[1])/float(train_res[2])))
+    print("Epoch:{} / Test loss : {} / Test  Accuracy:{:.02f}".format(epoch, test_res,
+                                                        100*float(test_res[1])/float(test_res[2])))

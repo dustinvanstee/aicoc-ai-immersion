@@ -49,6 +49,9 @@ ___
 2. Batch submission to LSF<br>
 `bsub 03_submit_pytorch.lsf`
 
+Stretch Assignment :  in 03_pytorch_cifar.py change TRAINING_EPOCHS from 2 to 25 for both custom and xfer learning models.  Compare results <br>
+
+
 # Lab4 : Submit Universal Function Approximator Training
 ___
 1. cd to this directory <br>

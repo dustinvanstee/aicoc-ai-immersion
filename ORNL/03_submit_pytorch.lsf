@@ -1,0 +1,20 @@
+#BSUB -P VEN201
+#BSUB -J pytorch_cifar.py
+#BSUB -o lsf_out/pytorch_cifar.%J
+#BSUB -nnodes 1
+#BSUB -W 00:20
+#BSUB -U DL
+#BSUB -q batch-hm
+
+date
+#export OMP_NUM_THREADS=1
+module load ibm-wml-ce/1.7.0-1
+conda activate wmlce17-ornl
+
+# seems like compute nodes cant download this so performing a onetime download from batch node..
+# subsequent runs reuse this directory and data
+if [ ! -d cifar10_data ]; then
+  wget http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz -P cifar10_data
+fi
+
+jsrun -n1 -c2 -g1 -a1 python ../py_aicoc/pytorch_cifar.py

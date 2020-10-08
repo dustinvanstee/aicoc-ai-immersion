@@ -17,4 +17,9 @@ if [ ! -d cifar10_data ]; then
   wget http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz -P cifar10_data
 fi
 
+if [ ! -f checkpoints/resnet18-5c106cde.pth ]; then
+  wget https://download.pytorch.org/models/resnet18-5c106cde.pth -P checkpoints
+fi
+
+
 jsrun -n1 -c2 -g1 -a1 python ../py_aicoc/pytorch_cifar.py

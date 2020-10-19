@@ -4,7 +4,7 @@ ___
 
 This repository is a collection of jupyter notebooks, python programs, and writeups regarding general machine learning topics.  General topics include (but not limited to) 
 * PyTorch
-* FastAI
+* FastAI (v2)
 * Applications of DL like NLP and computer vision
 * AI Essentials (sklearn/pandas)
 * Rapids

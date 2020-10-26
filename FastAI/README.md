@@ -1,7 +1,6 @@
 ## FastAI Notebooks
 
-####Inspiration for the notebooks were from the FastAI course-v3 repo.   
----
+*Inspiration for the notebooks were from the FastAI course-v3 repo.*   
 
 Fastai_image_classification_v1.ipynb : 
 This notebook was tested under WML-CE 1.7 using FastAI version 1.0.   
